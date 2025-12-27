@@ -1,0 +1,41 @@
+{
+    "company_name": "Acme Tech Services",
+    "offerings": [
+        {
+            "name": "3D Printing Service",
+            "keywords": [
+                "3d printing",
+                "additive manufacturing",
+                "rapid prototyping"
+            ],
+            "category": "manufacturing"
+        },
+        {
+            "name": "AI & Machine Learning",
+            "keywords": [
+                "ai",
+                "artificial intelligence",
+                "machine learning"
+            ],
+            "category": "it"
+        },
+        {
+            "name": "IT Consulting & Development",
+            "keywords": [
+                "software development",
+                "it consulting",
+                "cloud"
+            ],
+            "category": "it"
+        },
+        {
+            "name": "Housekeeping & Sanitation",
+            "keywords": [
+                "housekeeping",
+                "sanitation",
+                "cleaning"
+            ],
+            "category": "facility"
+        }
+    ]
+}

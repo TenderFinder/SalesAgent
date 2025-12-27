@@ -1,0 +1,16 @@
+[
+    {
+        "tender_id": "services_home_3d22084507",
+        "tender_title": "3D Printing Service",
+        "matched_product": "3D Printing Service",
+        "matching_score": 80,
+        "customization_possibility": "The product can be customized to fit the tender requirement, but it may require some minor adjustments. The service requires a match for the specifications and agreed delivery timelines."
+    },
+    {
+        "tender_id": "services_home_ai_7a91cde120",
+        "tender_title": "AI Model Development Service",
+        "matched_product": "AI & Machine Learning",
+        "matching_score": 80,
+        "customization_possibility": "Highly possible"
+    }
+]
