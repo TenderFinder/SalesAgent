@@ -9,37 +9,54 @@ def clean_html(text):
     """Basic cleanup if needed, though LLMs handle HTML well."""
     return text
 
-def analyze_match(tender, product):
+def analyze_bulk_matches(tenders, products):
     """
-    Uses Ollama to analyze the match between a tender and a product.
-    Returns a dict with 'score', 'customization_analysis', and 'reasoning'.
+    Uses Ollama to analyze matches between ALL tenders and ALL products in a single call.
+    Returns a list of match objects.
     """
     
-    # Construct a concise prompt
-    tensor_desc = f"Title: {tender.get('display_name')}\nDescription: {tender.get('description')}\nSLA: {tender.get('sla')}\nTags: {tender.get('search_tags')}"
-    product_desc = f"Product: {product.get('name')}\nKeywords: {product.get('keywords')}\nCategory: {product.get('category')}"
-    import pdb; pdb.set_trace()
+    # Prepare concise lists for the prompt
+    tenders_list_str = json.dumps([{
+        "id": t.get('id'),
+        "title": t.get('display_name'),
+        "description": t.get('description'),
+        "sla": t.get('sla'),
+        "tags": t.get('search_tags')
+    } for t in tenders], indent=2)
+
+    products_list_str = json.dumps([{
+        "name": p.get('name'),
+        "keywords": p.get('keywords'),
+        "category": p.get('category')
+    } for p in products], indent=2)
 
     prompt = f"""
-    You are a Sales Engineer. Analyze if the following Company Product can fulfill the Tender requirement.
+    You are a Sales Engineer. Analyze the following list of Tenders and Company Products to find viable sales opportunities.
     
-    TENDER DETAILS:
-    {tensor_desc}
+    AVAILABLE TENDERS:
+    {tenders_list_str}
     
-    COMPANY PRODUCT:
-    {product_desc}
+    COMPANY PRODUCTS:
+    {products_list_str}
     
     Task:
-    1. Determine a Matching Score (0-100). 100 = Perfect match, 0 = No relation.
-    2. Analyze if the product can be customized to fit (if not a perfect match).
+    1. For each tender, identify if any of our products act as a solution.
+    2. Only return substantial matches (Matching Score > 50).
+    3. Analyze if the product needs customization.
     
-    Return ONLY a JSON object in this format:
-    {{
-        "score": <int>,
-        "customization_possibility": "<string explanation>",
-        "reasoning": "<short reasoning>",
-        "matched_products": <list of products>
-    }}
+    Return ONLY a JSON list of objects in this format:
+    [
+        {{
+            "tender_id": "<id from tender list>",
+            "tender_title": "<title from tender list>",
+            "matched_product": "<product name>",
+            "matching_score": <int 0-100>,
+            "customization_possibility": "<string explanation>",
+            "reasoning": "<short reasoning>"
+        }}
+    ]
+    
+    If no matches are found, return an empty list [].
     """
 
     try:
@@ -48,33 +65,26 @@ def analyze_match(tender, product):
         ])
         
         content = response['message']['content']
-        # Attempt to parse JSON from the response. 
-        # LLMs might add text around it, so we might need robust parsing if it fails often.
-        # For now, relying on "Return ONLY JSON" instruction.
-        
         print(f"DEBUG LLM RAW: {content[:100]}...") # Debugging
-        # Check if content is wrapped in markdown code block
+        
+        # Clean up markdown
         if "```json" in content:
             content = content.split("```json")[1].split("```")[0]
         elif "```" in content:
             content = content.split("```")[1].split("```")[0]
             
-        return json.loads(content.strip())
+        matches = json.loads(content.strip())
+        return matches
         
     except Exception as e:
-        print(f"DEBUG ERROR: {e}") # Debugging
-        return {
-            "score": 0,
-            "customization_possibility": "Error in analysis",
-            "reasoning": str(e)
-        }
+        print(f"DEBUG ERROR: {e}")
+        return []
 
 def main():
-    print("🚀 Starting Sales Agent Analysis with Ollama...")
+    print("🚀 Starting Sales Agent Analysis with Ollama (Bulk Mode)...")
     
     try:
         tenders_data = load_json('available_tenders.json')
-        # Which im selling
         products_data = load_json('data/our_products.json')
     except FileNotFoundError as e:
         print(f"❌ File not found: {e}")
@@ -83,39 +93,13 @@ def main():
     tenders = tenders_data.get('services', [])
     offerings = products_data.get('offerings', [])
     
-    matches = []
-    
     print(f"📡 Loaded {len(tenders)} tenders and {len(offerings)} products.")
-    print("🧠 Analyzing matches contextually (this may take a moment)...")
+    print("🧠 Analyze matches contextually (Bulk)...")
 
-    for tender in tenders:
-        best_match = None
-        highest_score = -1
-        
-        # Strategies: 
-        # 1. Compare against ALL products and pick the best? 
-        # 2. Return all viable matches (score > 50)?
-        # Let's return all matches with score > 60 to be helpful.
-        
-        for product in offerings:
-            # Optimization: Quick keyword check? 
-            # Skipping optimization to ensure semantic matching (e.g. "Sanitation" vs "Cleaning").
-            
-            print(f"   Running: {tender['display_name']} vs {product['name']}...")
-            result = analyze_match(tender, product)
-            
-            if result['score'] >= 50:  # Threshold for relevance
-                match_record = {
-                    "tender_id": tender.get('id'),
-                    "tender_title": tender.get('display_name'),
-                    "matched_product": product.get('name'),
-                    "matching_score": result['score'],
-                    "customization_possibility": result['customization_possibility']
-                }
-                matches.append(match_record)
+    matches = analyze_bulk_matches(tenders, offerings)
 
     # Output Result
-    print("\n✅ Analysis Complete. Matches found:")
+    print(f"\n✅ Analysis Complete. Found {len(matches)} matches:")
     print(json.dumps(matches, indent=4))
     
     # Save to file
