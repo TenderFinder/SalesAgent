@@ -37,7 +37,8 @@ def analyze_match(tender, product):
     {{
         "score": <int>,
         "customization_possibility": "<string explanation>",
-        "reasoning": "<short reasoning>"
+        "reasoning": "<short reasoning>",
+        "matched_products": <list of products>
     }}
     """
 
@@ -72,9 +73,9 @@ def main():
     print("🚀 Starting Sales Agent Analysis with Ollama...")
     
     try:
-        tenders_data = load_json('final.json')
+        tenders_data = load_json('available_tenders.json')
         # Which im selling
-        products_data = load_json('data/product.json')
+        products_data = load_json('data/our_products.json')
     except FileNotFoundError as e:
         print(f"❌ File not found: {e}")
         return
