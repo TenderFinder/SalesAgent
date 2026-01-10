@@ -18,6 +18,7 @@ def analyze_match(tender, product):
     # Construct a concise prompt
     tensor_desc = f"Title: {tender.get('display_name')}\nDescription: {tender.get('description')}\nSLA: {tender.get('sla')}\nTags: {tender.get('search_tags')}"
     product_desc = f"Product: {product.get('name')}\nKeywords: {product.get('keywords')}\nCategory: {product.get('category')}"
+    import pdb; pdb.set_trace()
 
     prompt = f"""
     You are a Sales Engineer. Analyze if the following Company Product can fulfill the Tender requirement.
@@ -72,6 +73,7 @@ def main():
     
     try:
         tenders_data = load_json('final.json')
+        # Which im selling
         products_data = load_json('data/product.json')
     except FileNotFoundError as e:
         print(f"❌ File not found: {e}")

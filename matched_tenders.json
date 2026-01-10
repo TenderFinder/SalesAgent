@@ -1,16 +1,16 @@
 [
     {
-        "tender_id": "services_home_3d22084507",
-        "tender_title": "3D Printing Service",
-        "matched_product": "3D Printing Service",
-        "matching_score": 80,
-        "customization_possibility": "The product can be customized to fit the tender requirement, but it may require some minor adjustments. The service requires a match for the specifications and agreed delivery timelines."
-    },
-    {
         "tender_id": "services_home_ai_7a91cde120",
         "tender_title": "AI Model Development Service",
         "matched_product": "AI & Machine Learning",
         "matching_score": 80,
-        "customization_possibility": "Highly possible"
+        "customization_possibility": "The product can be customized to fit the tender requirement, as it offers AI Model Development Service which covers data preparation, model training, testing, and deployment of machine learning solutions."
+    },
+    {
+        "tender_id": "services_home_housekeeping_5cde219f77",
+        "tender_title": "Housekeeping & Sanitation Service",
+        "matched_product": "Housekeeping & Sanitation",
+        "matching_score": 80,
+        "customization_possibility": "The product can be customized to fit the tender requirement as it aligns with the key keywords and categories. However, some additional features like daily cleaning logs maintenance might need to be incorporated."
     }
 ]
