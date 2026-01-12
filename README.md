@@ -1,345 +1,103 @@
 # SalesAgent 🤖📋
 
-**An intelligent toolkit for government tender discovery and matching**
+**Intelligent Government Tender Matching System**
 
-Automatically fetch government tenders from GeM (Government e-Marketplace), store them in MongoDB, and intelligently match them against your company's product offerings using both rule-based algorithms and AI-powered analysis.
-
----
-
-## 🌟 Features
-
-- **🔄 Automated Data Pipeline**: Fetch tenders from GeM API and persist to MongoDB
-- **🎯 Smart Matching**: Rule-based tender-to-product matching with scoring
-- **🤖 AI-Powered Analysis**: LLM-driven bulk analysis using Ollama for deeper insights
-- **📊 JSON-Based Integration**: Easy-to-read inputs/outputs for seamless integration
-- **🔐 Secure Configuration**: Environment-based configuration management
-- **📈 Scalable Architecture**: Modular design for easy extension and customization
+Automatically find and match government tenders from GeM (Government e-Marketplace) with your company's products and services using AI.
 
 ---
 
-## 📋 Table of Contents
+## 🎯 What Does This Do?
 
-- [Quick Start](#-quick-start)
-- [Architecture Overview](#-architecture-overview)
-- [Prerequisites](#-prerequisites)
-- [Installation](#-installation)
-- [Configuration](#-configuration)
-- [Usage](#-usage)
-- [Data Formats](#-data-formats)
-- [Troubleshooting](#-troubleshooting)
-- [Security Best Practices](#-security-best-practices)
-- [Contributing](#-contributing)
-- [License](#-license)
+This system helps you:
+1. **Fetch** government tenders from GeM automatically
+2. **Match** them with your products using AI or rule-based algorithms
+3. **Get results** via a simple web API or command line
 
 ---
 
-## 🚀 Quick Start
+## 🚀 Quick Start (5 Minutes)
+
+### Step 1: Install Python
+
+Make sure you have Python 3.12 or higher installed.
+
+**Check your Python version:**
+```bash
+python3 --version
+```
+
+If you don't have Python, download it from [python.org](https://www.python.org/downloads/)
+
+---
+
+### Step 2: Download the Project
 
 ```bash
-# 1. Clone the repository
-git clone <repository-url>
+# Clone or download this repository
 cd SalesAgent
-
-# 2. Set up Python environment
-python3.12 -m venv .venv
-source .venv/bin/activate  # On Windows: .venv\Scripts\activate
-
-# 3. Install dependencies
-pip install -r requirements.txt
-
-# 4. Configure environment (IMPORTANT!)
-export MONGO_URI="your_mongodb_connection_string"
-
-# 5. Run the pipeline
-python main.py
-
-# 6. Run AI analysis (requires Ollama)
-python SaleAgent.py
 ```
 
 ---
 
-## 🏗️ Architecture Overview
-
-```
-┌─────────────────┐
-│   GeM API       │
-│ (Tenders Data)  │
-└────────┬────────┘
-         │
-         ▼
-┌─────────────────┐      ┌──────────────────┐
-│   api_client.py │─────▶│   MongoDB        │
-│  (Fetch Data)   │      │ (Tender Storage) │
-└─────────────────┘      └──────────────────┘
-         │                        │
-         ▼                        ▼
-┌─────────────────┐      ┌──────────────────┐
-│    main.py      │      │   matcher.py     │
-│  (Orchestrator) │      │ (Rule Matching)  │
-└─────────────────┘      └──────────────────┘
-                                  │
-                                  ▼
-                         ┌──────────────────┐
-                         │  SaleAgent.py    │
-                         │  (AI Analysis)   │
-                         └──────────────────┘
-                                  │
-                                  ▼
-                         ┌──────────────────┐
-                         │ matched_tenders  │
-                         │     .json        │
-                         └──────────────────┘
-```
-
-### Component Breakdown
-
-| Component | Purpose | Dependencies |
-|-----------|---------|--------------|
-| `main.py` | Orchestrates the data pipeline | `api_client`, `mongo_client`, `config` |
-| `api_client.py` | Fetches tender data from GeM API | `requests` |
-| `mongo_client.py` | Handles MongoDB operations | `pymongo` |
-| `matcher.py` | Rule-based matching engine | `scorer` (⚠️ **Missing - see Known Issues**) |
-| `SaleAgent.py` | AI-powered analysis using LLMs | `ollama` |
-| `config.py` | Configuration constants | None |
-
----
-
-## ⚙️ Prerequisites
-
-### Required
-- **Python 3.12+** (specified in `Pipfile`)
-- **MongoDB** instance (MongoDB Atlas or self-hosted)
-  - Free tier Atlas cluster: [mongodb.com/cloud/atlas](https://www.mongodb.com/cloud/atlas)
-- **Git** for version control
-
-### Optional (for AI Analysis)
-- **Ollama** for LLM-powered analysis
-  - Installation: [ollama.com](https://ollama.com)
-  - Recommended model: `llama3.2`
-
----
-
-## 📦 Installation
-
-### Option 1: Using pipenv (Recommended)
+### Step 3: Install Dependencies
 
 ```bash
-# Install pipenv
-pip install pipenv
-
-# Install dependencies and create virtual environment
-pipenv install
-
-# Activate the virtual environment
-pipenv shell
-```
-
-### Option 2: Using venv + pip
-
-```bash
-# Create virtual environment
-python3.12 -m venv .venv
-
-# Activate virtual environment
-# On macOS/Linux:
-source .venv/bin/activate
-# On Windows:
-.venv\Scripts\activate
-
-# Install dependencies
+# Install required packages
 pip install -r requirements.txt
 ```
 
-### Verify Installation
+**What gets installed:**
+- FastAPI - For the web API
+- Pydantic - For data validation
+- PyMongo - For MongoDB database
+- Requests - For API calls
+- Ollama - For AI matching (optional)
+
+---
+
+### Step 4: Set Up MongoDB
+
+You need a MongoDB database to store tenders.
+
+**Option A: Use MongoDB Atlas (Free Cloud Database)**
+
+1. Go to [mongodb.com/cloud/atlas](https://www.mongodb.com/cloud/atlas)
+2. Create a free account
+3. Create a free cluster
+4. Get your connection string (looks like: `mongodb+srv://username:password@cluster.mongodb.net/`)
+5. Set it as an environment variable:
 
 ```bash
-python -c "import pymongo, requests, ollama; print('✅ All dependencies installed')"
+export MONGO_URI="mongodb+srv://your-username:your-password@your-cluster.mongodb.net/"
+```
+
+**Option B: Use Local MongoDB**
+
+If you have MongoDB installed locally:
+```bash
+export MONGO_URI="mongodb://localhost:27017/"
 ```
 
 ---
 
-## 🔧 Configuration
+### Step 5: Add Your Products
 
-### Environment Variables (Recommended)
-
-**⚠️ CRITICAL: Never commit credentials to version control!**
-
-```bash
-# Set MongoDB connection string
-export MONGO_URI="mongodb+srv://<username>:<password>@<cluster>.mongodb.net/"
-
-# Optional: Override default database/collection
-export DB_NAME="gem_database"
-export COLLECTION_NAME="services"
-```
-
-### Configuration File
-
-Edit `config.py` for development only. **Remove credentials before committing!**
-
-```python
-# config.py
-import os
-
-API_URL = "https://mkp.gem.gov.in/cms/others/api/services/list.json?search%5Bstatus_in%5D%5B%5D=active&_ln=en"
-MONGO_URI = os.getenv("MONGO_URI", "mongodb://localhost:27017/")
-DB_NAME = os.getenv("DB_NAME", "gem_database")
-COLLECTION_NAME = os.getenv("COLLECTION_NAME", "services")
-```
-
-### Product Catalog Configuration
-
-Edit `data/our_products.json` to define your company's offerings:
+Edit the file `data/products/our_products.json` with your company's products:
 
 ```json
 {
   "company_name": "Your Company Name",
   "offerings": [
     {
-      "name": "Your Product/Service",
+      "name": "Your Product Name",
       "keywords": ["keyword1", "keyword2", "keyword3"],
-      "category": "category_name"
+      "category": "your-category"
     }
   ]
 }
 ```
 
----
-
-## 💻 Usage
-
-### 1️⃣ Fetch and Store Tenders
-
-Retrieves tenders from GeM API and stores them in MongoDB.
-
-```bash
-python main.py
-```
-
-**Expected Output:**
-```
-🚀 Starting GEM API → MongoDB pipeline
-📡 Fetching data from API...
-🗄️ Connecting to MongoDB...
-✅ Data saved to MongoDB successfully
-```
-
-### 2️⃣ Rule-Based Matching
-
-**⚠️ Known Issue**: `matcher.py` requires `scorer.py` which is currently missing from the repository.
-
-**Workaround**: Create `scorer.py` with the following implementation:
-
-```python
-# scorer.py
-def score_match(offering, tender):
-    """
-    Calculate match score between an offering and a tender.
-    
-    Args:
-        offering: Dict with 'keywords' and 'name'
-        tender: Dict with 'search_tags', 'display_name', 'description'
-    
-    Returns:
-        Tuple of (score: float, reasons: list)
-    """
-    score = 0.0
-    reasons = []
-    
-    # Get keywords and tags
-    keywords = [k.lower() for k in offering.get('keywords', [])]
-    tags = [t.lower() for t in tender.get('search_tags', [])]
-    tender_text = (tender.get('display_name', '') + ' ' + 
-                   tender.get('description', '')).lower()
-    
-    # Check keyword matches in tags
-    for keyword in keywords:
-        if keyword in tags:
-            score += 2.0
-            reasons.append(f"Keyword '{keyword}' found in tender tags")
-        elif keyword in tender_text:
-            score += 1.0
-            reasons.append(f"Keyword '{keyword}' found in tender description")
-    
-    return score, reasons
-```
-
-**Then run matching:**
-
-```bash
-# Command-line usage
-python -c "from matcher import TenderMatchingAgent; \
-m = TenderMatchingAgent('data/our_products.json', 'available_tenders.json'); \
-import json; print(json.dumps(m.find_matches(min_score=1.0), indent=2))"
-```
-
-**Programmatic usage:**
-
-```python
-from matcher import TenderMatchingAgent
-
-matcher = TenderMatchingAgent(
-    product_file='data/our_products.json',
-    tender_file='available_tenders.json'
-)
-
-matches = matcher.find_matches(min_score=1.0)
-for match in matches:
-    print(f"Tender: {match['tender_name']}")
-    print(f"Product: {match['matched_offering']}")
-    print(f"Score: {match['score']}")
-    print(f"Reason: {match['reason']}")
-    print(f"URL: {match['market_url']}\n")
-```
-
-### 3️⃣ AI-Powered Analysis (Ollama)
-
-Uses LLM to perform intelligent matching with contextual understanding.
-
-**Prerequisites:**
-```bash
-# Install Ollama (macOS)
-brew install ollama
-
-# Start Ollama service
-ollama serve
-
-# Pull the model (in another terminal)
-ollama pull llama3.2
-```
-
-**Run analysis:**
-```bash
-python SaleAgent.py
-```
-
-**Expected Output:**
-```
-🚀 Starting Sales Agent Analysis with Ollama (Bulk Mode)...
-📡 Loaded 6 tenders and 4 products.
-🧠 Analyze matches contextually (Bulk)...
-DEBUG LLM RAW: [...]
-✅ Analysis Complete. Found 3 matches:
-[
-  {
-    "tender_id": "services_home_3d22084507",
-    "tender_title": "3D Printing Service",
-    "matched_product": "3D Printing Service",
-    "matching_score": 95,
-    "customization_possibility": "Minimal customization needed",
-    "reasoning": "Direct match on service type and keywords"
-  }
-]
-💾 Saved results to matched_tenders.json
-```
-
----
-
-## 📄 Data Formats
-
-### Input: Product Catalog (`data/our_products.json`)
-
+**Example:**
 ```json
 {
   "company_name": "Acme Tech Services",
@@ -350,268 +108,454 @@ DEBUG LLM RAW: [...]
       "category": "manufacturing"
     },
     {
-      "name": "AI & Machine Learning",
-      "keywords": ["ai", "artificial intelligence", "machine learning"],
+      "name": "AI Consulting",
+      "keywords": ["artificial intelligence", "machine learning", "ai"],
       "category": "it"
     }
   ]
 }
 ```
 
-### Input: Tenders (`available_tenders.json`)
+---
 
+## 🎮 How to Use
+
+### Method 1: Fetch Tenders (Command Line)
+
+Fetch the latest tenders from GeM and store them in your database:
+
+```bash
+python run_cli.py
+```
+
+**What happens:**
+- Connects to GeM API
+- Downloads active tenders
+- Saves them to MongoDB
+- Or saves to file if TENDER_DATA_SOURCE=file
+
+**Output:**
+```
+🚀 Starting GEM API → MongoDB pipeline
+📡 Fetching data from API...
+✅ Successfully stored 25 tenders in MongoDB
+```
+
+---
+
+### Method 2: Use the Web API (Recommended)
+
+Start the API server:
+
+```bash
+python run_api.py
+```
+
+**What happens:**
+- API server starts on http://localhost:8000
+- You can access it from your browser or any programming language
+- Automatically loads configuration from app/.env
+
+**Access the interactive documentation:**
+Open your browser and go to:
+```
+http://localhost:8000/docs
+```
+
+You'll see a beautiful interactive interface where you can:
+- Click on any endpoint
+- Try it out directly from your browser
+- See example requests and responses
+
+---
+
+## 📡 Using the API
+
+### 1. Fetch Fresh Tenders
+
+**In your browser or using curl:**
+```bash
+curl -X POST "http://localhost:8000/api/v1/tenders/fetch"
+```
+
+**Response:**
 ```json
 {
-  "total_count": 6,
-  "source": "GeM Services",
-  "services": [
+  "success": true,
+  "message": "Fetched and stored 25 tenders",
+  "total_tenders": 25
+}
+```
+
+---
+
+### 2. Run Matching (Rule-Based)
+
+Find matches between tenders and your products:
+
+```bash
+curl -X POST "http://localhost:8000/api/v1/match" \
+  -H "Content-Type: application/json" \
+  -d '{"use_ai": false, "min_score": 1.0}'
+```
+
+**Response:**
+```json
+{
+  "success": true,
+  "message": "Matching complete. Found 5 matches.",
+  "total_matches": 5,
+  "matches": [
     {
-      "id": "services_home_3d22084507",
-      "type": "OfferPriceOnlyInBidService",
-      "display_name": "3D Printing Service",
-      "description": "<p>3D Printing or Additive Manufacturing...</p>",
-      "sla": "<p>Service STC requirements...</p>",
-      "market_url": "https://mkp.gem.gov.in/services#!/browse/...",
-      "search_tags": ["Additive Manufacturing", "3D Printing", "Rapid Prototyping"],
-      "status": "active"
+      "tender_id": "services_home_3d22084507",
+      "tender_name": "3D Printing Service",
+      "matched_product": "3D Printing Service",
+      "score": 6.0,
+      "reasons": ["Keyword '3d printing' found in tender tags"],
+      "market_url": "https://mkp.gem.gov.in/...",
+      "match_type": "rule-based"
     }
   ]
 }
 ```
 
-### Output: Matched Tenders (`matched_tenders.json`)
+---
 
-```json
-[
-  {
-    "tender_id": "services_home_3d22084507",
-    "tender_title": "3D Printing Service",
-    "matched_product": "3D Printing Service",
-    "matching_score": 95,
-    "customization_possibility": "Minimal customization needed",
-    "reasoning": "Direct match on service type and keywords"
-  }
-]
+### 3. Run AI Matching (Optional - Requires Ollama)
+
+For smarter, context-aware matching:
+
+**First, install Ollama:**
+```bash
+# On macOS
+brew install ollama
+
+# Start Ollama
+ollama serve
+
+# In another terminal, pull the model
+ollama pull llama3.2/<your chosen model>
+```
+
+**Then run AI matching:**
+```bash
+curl -X POST "http://localhost:8000/api/v1/match" \
+  -H "Content-Type: application/json" \
+  -d '{"use_ai": true, "min_score": 50}'
 ```
 
 ---
 
-## 🔍 Troubleshooting
+### 4. Get Your Matches
 
-### Common Issues
-
-#### 1. MongoDB Connection Error
-
-**Error:** `pymongo.errors.ServerSelectionTimeoutError`
-
-**Solutions:**
-- Verify `MONGO_URI` is correctly set
-- Check MongoDB Atlas IP whitelist (add `0.0.0.0/0` for testing)
-- Ensure network connectivity
-- Verify credentials are correct
+Retrieve all matches found:
 
 ```bash
-# Test connection
-python -c "from pymongo import MongoClient; \
-client = MongoClient('$MONGO_URI'); \
-print(client.server_info())"
+curl "http://localhost:8000/api/v1/matches"
 ```
 
-#### 2. Missing `scorer.py`
+**Get top 10 matches:**
+```bash
+curl "http://localhost:8000/api/v1/matches?limit=10"
+```
 
-**Error:** `ModuleNotFoundError: No module named 'scorer'`
-
-**Solution:** Create `scorer.py` as shown in the [Rule-Based Matching](#2️⃣-rule-based-matching) section.
-
-#### 3. Ollama Connection Error
-
-**Error:** `ollama.exceptions.ConnectionError`
-
-**Solutions:**
-- Start Ollama service: `ollama serve`
-- Verify model is installed: `ollama list`
-- Pull model if missing: `ollama pull llama3.2`
-
-#### 4. API Fetch Failure
-
-**Error:** `❌ Failed to fetch data`
-
-**Solutions:**
-- Check internet connectivity
-- Verify API URL is accessible
-- Check for API rate limiting
-- Try with a browser to confirm API is working
-
-#### 5. Empty Match Results
-
-**Issue:** No matches found despite relevant products
-
-**Solutions:**
-- Lower `min_score` threshold in matcher
-- Verify keywords in `our_products.json` match tender tags
-- Check tender data format in `available_tenders.json`
-- Review `scorer.py` logic
+**Filter by score:**
+```bash
+curl "http://localhost:8000/api/v1/matches?min_score=5.0"
+```
 
 ---
 
-## 🔐 Security Best Practices
+### 5. View Statistics
 
-### ⚠️ Critical Security Issues
+See how many matches you have:
 
-**The current repository has exposed credentials in `config.py`!**
+```bash
+curl "http://localhost:8000/api/v1/stats"
+```
 
-### Immediate Actions Required
-
-1. **Remove credentials from `config.py`:**
-   ```python
-   # ❌ NEVER DO THIS
-   MONGO_URI = "mongodb+srv://user:password@cluster.mongodb.net/"
-   
-   # ✅ DO THIS INSTEAD
-   MONGO_URI = os.getenv("MONGO_URI", "mongodb://localhost:27017/")
-   ```
-
-2. **Rotate exposed credentials:**
-   - Change MongoDB password immediately
-   - Update connection string
-   - Review access logs for unauthorized access
-
-3. **Use environment variables:**
-   ```bash
-   # .env file (add to .gitignore!)
-   MONGO_URI=mongodb+srv://user:password@cluster.mongodb.net/
-   DB_NAME=gem_database
-   COLLECTION_NAME=services
-   ```
-
-4. **Update `.gitignore`:**
-   ```gitignore
-   # Environment variables
-   .env
-   .env.local
-   
-   # Credentials
-   config_local.py
-   secrets/
-   
-   # Output files with sensitive data
-   matched_tenders.json
-   available_tenders.json
-   ```
-
-### Additional Security Recommendations
-
-- **Use MongoDB Atlas IP Whitelist**: Restrict access to known IPs
-- **Enable MongoDB Authentication**: Use strong passwords
-- **Implement API Rate Limiting**: Prevent abuse of GeM API
-- **Sanitize LLM Inputs**: Prevent prompt injection attacks
-- **Audit Logs**: Monitor MongoDB access and API usage
-- **Data Privacy**: Ensure tender data handling complies with regulations
+**Response:**
+```json
+{
+  "total_matches": 15,
+  "by_product": {
+    "3D Printing Service": 5,
+    "AI Consulting": 4,
+    "IT Services": 6
+  },
+  "score_distribution": {
+    "0-25": 2,
+    "26-50": 3,
+    "51-75": 5,
+    "76-100": 5
+  }
+}
+```
 
 ---
 
-## 📊 Repository Structure
+## 🌐 Using from Python
+
+```python
+import requests
+
+BASE_URL = "http://localhost:8000"
+
+# Fetch tenders
+response = requests.post(f"{BASE_URL}/api/v1/tenders/fetch")
+print(response.json())
+
+# Run matching
+response = requests.post(
+    f"{BASE_URL}/api/v1/match",
+    json={"use_ai": False, "min_score": 1.0}
+)
+matches = response.json()
+print(f"Found {matches['total_matches']} matches!")
+
+# Get statistics
+stats = requests.get(f"{BASE_URL}/api/v1/stats").json()
+print(f"Total matches: {stats['total_matches']}")
+```
+
+---
+
+## 🌐 Using from JavaScript
+
+```javascript
+const BASE_URL = 'http://localhost:8000';
+
+// Fetch tenders
+fetch(`${BASE_URL}/api/v1/tenders/fetch`, { method: 'POST' })
+  .then(res => res.json())
+  .then(data => console.log(data));
+
+// Run matching
+fetch(`${BASE_URL}/api/v1/match`, {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({ use_ai: false, min_score: 1.0 })
+})
+  .then(res => res.json())
+  .then(data => console.log(`Found ${data.total_matches} matches!`));
+```
+
+---
+
+## 📁 Project Structure
 
 ```
 SalesAgent/
-├── main.py                    # Main pipeline orchestrator
-├── api_client.py              # GeM API client
-├── mongo_client.py            # MongoDB operations
-├── matcher.py                 # Rule-based matching engine
-├── SaleAgent.py              # AI-powered analysis
-├── config.py                  # Configuration (⚠️ remove credentials!)
-├── scorer.py                  # ⚠️ MISSING - needs to be created
-├── requirements.txt           # Python dependencies
-├── Pipfile                    # Pipenv configuration
-├── Pipfile.lock              # Locked dependencies
-├── available_tenders.json     # Sample tender data
-├── matched_tenders.json       # Output from AI analysis
-├── data/
-│   └── our_products.json     # Product catalog
-└── README.md                  # This file
+├── run_cli.py           # Fetch tenders script
+├── run_api.py           # Web API application
+├── requirements.txt     # Python packages needed
+│
+├── app/                 # Core application code
+│   ├── .env            # Configuration file
+│   ├── main.py         # App factory
+│   ├── routes/         # API endpoints
+│   ├── models/         # Data structures
+│   ├── repositories/   # Database operations
+│   ├── agents/         # Matching algorithms
+│   ├── services/       # Business logic
+│   └── config/         # Settings
+│
+└── data/               # Your data
+    ├── products/       # Your products (EDIT THIS!)
+    ├── tenders/        # Downloaded tenders
+    └── outputs/        # Match results
 ```
 
 ---
 
-## 🤝 Contributing
+## ⚙️ Configuration
 
-Contributions are welcome! Here's how you can help:
+### Environment Variables & .env File
 
-### Reporting Issues
+The application uses a `.env` file located at `app/.env` for configuration.
 
-- Use GitHub Issues for bug reports
-- Include error messages, logs, and steps to reproduce
-- Specify your environment (OS, Python version, etc.)
+**Configuration Options:**
 
-### Submitting Pull Requests
+1. **Data Source:**
+   ```env
+   # Load from local files (Default, good for testing)
+   TENDER_DATA_SOURCE=file
+   PRODUCT_DATA_SOURCE=file
+   
+   # Load from MongoDB (Good for production)
+   # TENDER_DATA_SOURCE=mongodb
+   ```
 
-1. Fork the repository
-2. Create a feature branch: `git checkout -b feature/your-feature`
-3. Make your changes
-4. Add tests if applicable
-5. Commit with clear messages: `git commit -m "Add: feature description"`
-6. Push to your fork: `git push origin feature/your-feature`
-7. Open a Pull Request
+2. **MongoDB Settings (Required if source is mongodb):**
+   ```env
+   MONGO_URI=mongodb+srv://user:password@cluster.mongodb.net/
+   MONGO_DB_NAME=gem_database
+   ```
 
-### Development Priorities
+3. **AI Settings:**
+   ```env
+   OLLAMA_MODEL=llama3.2
+   ```
 
-- [ ] Create `scorer.py` with robust matching algorithm
-- [ ] Implement environment variable configuration
-- [ ] Add unit tests for all components
-- [ ] Create CLI interface for easier usage
-- [ ] Add logging framework
-- [ ] Implement error handling and retry logic
-- [ ] Add data validation for JSON inputs
-- [ ] Create Docker containerization
-- [ ] Add CI/CD pipeline
-- [ ] Improve documentation with examples
+4. **Matching Settings:**
+   ```env
+   MIN_MATCH_SCORE=1.0
+   ```
+
+**To Setup:**
+Copy `.env.example` to `app/.env` and edit it:
+```bash
+cp .env.example app/.env
+# Edit app/.env with your settings
+```
+
+---
+
+## 🔧 Troubleshooting
+
+### Problem: "ModuleNotFoundError"
+
+**Solution:** Install dependencies
+```bash
+pip install -r requirements.txt
+```
+
+---
+
+### Problem: "MongoDB connection error"
+
+**Solution:** Check your MongoDB URI in `app/.env`
+```bash
+# Make sure MONGO_URI is set correctly in app/.env
+# Verify connection string format
+```
+
+**For MongoDB Atlas:**
+- Check your IP is whitelisted (add `0.0.0.0/0` for testing)
+- Verify username and password are correct
+
+---
+
+### Problem: "Port 8000 already in use"
+
+**Solution:** Use a different port
+```bash
+uvicorn app.main:app --reload --port 8001
+```
+
+---
+
+### Problem: "No matches found"
+
+**Solutions:**
+- Lower the `min_score` threshold: `{"min_score": 0.5}`
+- Check your product keywords match tender descriptions
+- Make sure tenders are in the database (run `python run_cli.py` first)
+
+---
+
+### Problem: "AI matching not working"
+
+**Solution:** Install and start Ollama
+```bash
+# Install Ollama
+brew install ollama  # macOS
+# or download from ollama.com
+
+# Start Ollama service
+ollama serve
+
+# Pull the model (in another terminal)
+ollama pull llama3.2
+```
+
+---
+
+## 📖 API Documentation
+
+For complete API documentation with all endpoints and examples, see:
+- **Interactive Docs:** http://localhost:8000/docs (after starting the server)
+- **API Documentation:** See `API_DOCUMENTATION.md` file
+
+---
+
+## 🎯 Common Use Cases
+
+### Use Case 1: Daily Tender Check
+
+Run this daily to get fresh tenders:
+```bash
+python run_cli.py
+```
+
+### Use Case 2: Find Matches for New Products
+
+1. Add your product to `data/products/our_products.json`
+2. Run matching:
+```bash
+curl -X POST http://localhost:8000/api/v1/match \
+  -H "Content-Type: application/json" \
+  -d '{"use_ai": false, "min_score": 1.0}'
+```
+
+### Use Case 3: Integrate with Your Website
+
+Use the API endpoints from your website:
+```javascript
+// Fetch and display matches
+fetch('http://localhost:8000/api/v1/matches?limit=10')
+  .then(res => res.json())
+  .then(matches => {
+    // Display matches on your website
+    matches.forEach(match => {
+      console.log(`${match.tender_name} - Score: ${match.score}`);
+    });
+  });
+```
+
+---
+
+## 🚀 Next Steps
+
+1. ✅ **Set up Configuration** - Create `app/.env`
+2. ✅ **Add your products** - Edit `data/products/our_products.json`
+3. ✅ **Fetch tenders** - Run `python run_cli.py`
+4. ✅ **Start the API** - Run `python run_api.py`
+5. ✅ **Try matching** - Visit http://localhost:8000/docs
+
+---
+
+## 💡 Tips
+
+- **Start simple:** Use rule-based matching first (no AI needed)
+- **Test with the docs:** The interactive docs at `/docs` are the easiest way to test
+- **Check logs:** The API shows helpful error messages
+- **Lower min_score:** If you're not getting matches, try `min_score: 0.5`
+
+---
+
+## 🤝 Need Help?
+
+1. Check the **Troubleshooting** section above
+2. Look at the interactive API docs: http://localhost:8000/docs
+3. Read the detailed API documentation: `API_DOCUMENTATION.md`
 
 ---
 
 ## 📝 License
 
-This repository does not currently include a license file.
-
-**Recommended actions:**
-- Add an appropriate open-source license (MIT, Apache-2.0, GPL-3.0)
-- Consider your use case:
-  - **MIT**: Permissive, allows commercial use
-  - **Apache-2.0**: Permissive with patent protection
-  - **GPL-3.0**: Copyleft, requires derivative works to be open-source
+This project is for internal use. Add your license here if needed.
 
 ---
 
-## 📞 Support & Contact
+## 🎉 You're Ready!
 
-- **Issues**: [GitHub Issues](../../issues)
-- **Discussions**: [GitHub Discussions](../../discussions)
-- **Documentation**: This README and inline code comments
+The system is simple:
+1. **Fetch** tenders → `python run_cli.py`
+2. **Match** them → Use the API
+3. **Get results** → Check the matches
 
----
-
-## 🎯 Roadmap
-
-### Version 1.1 (Next Release)
-- ✅ Fix missing `scorer.py` dependency
-- ✅ Implement environment-based configuration
-- ✅ Add comprehensive error handling
-- ⬜ Create CLI interface
-- ⬜ Add unit tests
-
-### Version 2.0 (Future)
-- ⬜ Web dashboard for match visualization
-- ⬜ Real-time tender monitoring
-- ⬜ Email notifications for new matches
-- ⬜ Multi-source tender aggregation
-- ⬜ Advanced ML-based scoring
-
----
-
-## 🙏 Acknowledgments
-
-- **GeM (Government e-Marketplace)** for providing the tender API
-- **Ollama** for local LLM capabilities
-- **MongoDB** for flexible data storage
+**Start the API and visit http://localhost:8000/docs to try it out!** 🚀
 
 ---
 
