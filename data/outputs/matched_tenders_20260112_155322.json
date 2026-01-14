@@ -1,0 +1,46 @@
+[
+  {
+    "tender_id": "services_home_3d22084507",
+    "tender_name": "3D Printing Service",
+    "matched_product": "3D Printing Service",
+    "score": 90.0,
+    "reasons": [
+      "Direct match with product name and keywords. Tender and product descriptions are identical."
+    ],
+    "market_url": "https://mkp.gem.gov.in/services#!/browse/services_home_3d22084507/open",
+    "match_type": "ai"
+  },
+  {
+    "tender_id": "services_home_housekeeping_5cde219f77",
+    "tender_name": "Housekeeping & Sanitation Service",
+    "matched_product": "Housekeeping & Sanitation",
+    "score": 90.0,
+    "reasons": [
+      "Exact product match with identical keywords and descriptions. Minimal customization needed if any."
+    ],
+    "market_url": "https://mkp.gem.gov.in/services#!/browse/services_home_housekeeping_5cde219f77/open",
+    "match_type": "ai"
+  },
+  {
+    "tender_id": "services_home_ai_7a91cde120",
+    "tender_name": "AI Model Development Service",
+    "matched_product": "AI & Machine Learning",
+    "score": 80.0,
+    "reasons": [
+      "Product covers AI/ML development, aligns with tender requirements. Slight customization may be needed for specific model requirements."
+    ],
+    "market_url": "https://mkp.gem.gov.in/services#!/browse/services_home_ai_7a91cde120/open",
+    "match_type": "ai"
+  },
+  {
+    "tender_id": "services_home_cloud_83bd91f201",
+    "tender_name": "Cloud Migration Service",
+    "matched_product": "IT Consulting & Development",
+    "score": 60.0,
+    "reasons": [
+      "Product includes cloud services but requires customization to fully meet specific migration and security requirements."
+    ],
+    "market_url": "https://mkp.gem.gov.in/services#!/browse/services_home_cloud_83bd91f201/open",
+    "match_type": "ai"
+  }
+]

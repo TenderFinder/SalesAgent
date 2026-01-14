@@ -1,0 +1,74 @@
+[
+  {
+    "tender_id": "services_home_3d22084507",
+    "tender_name": "3D Printing Service",
+    "matched_product": "3D Printing Service",
+    "score": 6.0,
+    "reasons": [
+      "Keyword '3d printing' found in tender tags",
+      "Keyword 'additive manufacturing' found in tender tags",
+      "Keyword 'rapid prototyping' found in tender tags"
+    ],
+    "market_url": "https://mkp.gem.gov.in/services#!/browse/services_home_3d22084507/open",
+    "match_type": "rule-based"
+  },
+  {
+    "tender_id": "services_home_ai_7a91cde120",
+    "tender_name": "AI Model Development Service",
+    "matched_product": "AI & Machine Learning",
+    "score": 5.0,
+    "reasons": [
+      "Keyword 'ai' found in tender description",
+      "Keyword 'artificial intelligence' found in tender tags",
+      "Keyword 'machine learning' found in tender tags"
+    ],
+    "market_url": "https://mkp.gem.gov.in/services#!/browse/services_home_ai_7a91cde120/open",
+    "match_type": "rule-based"
+  },
+  {
+    "tender_id": "services_home_housekeeping_5cde219f77",
+    "tender_name": "Housekeeping & Sanitation Service",
+    "matched_product": "Housekeeping & Sanitation",
+    "score": 5.0,
+    "reasons": [
+      "Keyword 'housekeeping' found in tender tags",
+      "Keyword 'sanitation' found in tender tags",
+      "Keyword 'cleaning' found in tender description"
+    ],
+    "market_url": "https://mkp.gem.gov.in/services#!/browse/services_home_housekeeping_5cde219f77/open",
+    "match_type": "rule-based"
+  },
+  {
+    "tender_id": "services_home_cloud_83bd91f201",
+    "tender_name": "Cloud Migration Service",
+    "matched_product": "IT Consulting & Development",
+    "score": 1.0,
+    "reasons": [
+      "Keyword 'cloud' found in tender description"
+    ],
+    "market_url": "https://mkp.gem.gov.in/services#!/browse/services_home_cloud_83bd91f201/open",
+    "match_type": "rule-based"
+  },
+  {
+    "tender_id": "services_home_housekeeping_5cde219f77",
+    "tender_name": "Housekeeping & Sanitation Service",
+    "matched_product": "AI & Machine Learning",
+    "score": 1.0,
+    "reasons": [
+      "Keyword 'ai' found in tender description"
+    ],
+    "market_url": "https://mkp.gem.gov.in/services#!/browse/services_home_housekeeping_5cde219f77/open",
+    "match_type": "rule-based"
+  },
+  {
+    "tender_id": "services_home_taxi_hiring_42b9c7e4a3",
+    "tender_name": "Vehicle Hiring Service – Taxi",
+    "matched_product": "AI & Machine Learning",
+    "score": 1.0,
+    "reasons": [
+      "Keyword 'ai' found in tender description"
+    ],
+    "market_url": "https://mkp.gem.gov.in/services#!/browse/services_home_taxi_hiring_42b9c7e4a3/open",
+    "match_type": "rule-based"
+  }
+]

@@ -205,3 +205,42 @@ cython_debug/
 marimo/_static/
 marimo/_lsp/
 __marimo__/
+
+# ========================================
+# SalesAgent Project-Specific
+# ========================================
+
+# Environment variables and secrets
+.env.local
+.env.production
+config_local.py
+secrets/
+credentials/
+
+# Output files with potentially sensitive data
+matched_tenders.json
+available_tenders.json
+
+# Local data files
+data/local_*.json
+data/test_*.json
+
+# MongoDB dumps
+*.bson
+dump/
+
+# Logs
+*.log
+logs/
+
+# IDE and editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
+
