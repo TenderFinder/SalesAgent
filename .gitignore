@@ -218,8 +218,8 @@ secrets/
 credentials/
 
 # Output files with potentially sensitive data
-matched_tenders.json
-available_tenders.json
+# matched_tenders.json
+# available_tenders.json
 
 # Local data files
 data/local_*.json
